@@ -1,0 +1,71 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+	{{parent()}}
+	{{ encore_entry_link_tags('stream') }}
+	<style>
+		.stream-background {
+			/* altura del fondo */
+			background-image: url("{{ media['posterPath'] }}");
+		}
+	</style>
+{% endblock %}
+
+
+{% block body %}
+
+	<div
+		class="stream-page">
+
+		<!-- Fondo dinámico -->
+		<div class="stream-background"></div>
+		<div class="stream-background-gradient"></div>
+
+		{% if link is not null %}
+			{# HEADER #}
+			<div class="logo-area">
+				<img src="{{ media['posterPath'] }}" alt="{{ media['title'] }}">
+			</div>
+
+			{# IFRAME #}
+			{% if iframe is not null and iframe|length > 0 %}
+				<div class="stream-iframe-wrapper">
+					<iframe src="{{ iframe }}" scrolling="no" frameborder="0" width="640" height="360" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+				</div>
+			{% endif %}
+			
+			{# LINK #}
+			<div class="stream-external-link {% if iframe is null %}stream-external-link-centered{% endif %}">
+				<button type="button" class="btn external-stream-btn" onclick="window.open('{{ link }}', '_blank', 'noopener,noreferrer')">
+					VER ENLACE EXTERNO ↗
+				</button>
+			</div>
+
+		{% else %}
+			<div class="token-form-box">
+
+				<div class="token-form-title">💰 ¿Quieres ver este contenido?</div>
+
+				<div class="token-form-subtitle">
+					Este stream requiere gastar algunos coins.  
+																																																																																        Confirma si deseas continuar.
+				</div>
+
+				{{ form_start(form) }}
+				<div class="form-check">
+					{{ form_widget(form.confirm) }}
+					<label class="form-check-label" for="{{ form.confirm.vars.id }}">
+						Acepto gastar coins para desbloquear este contenido ✨
+					</label>
+				</div>
+
+				{{ form_widget(form.submit) }}
+				{{ form_end(form) }}
+
+			</div>
+
+		{% endif %}
+
+	</div>
+
+{% endblock %}

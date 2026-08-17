@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('homepage') }}
+{% endblock %}
+
+{% block body %}
+	<div
+		class="app-root">
+
+		{# BOARD #}
+		<main
+			class="board">
+			{# Movies #}
+			<div class="board-section-header">
+				<h2 class="board-section-title">Popular - Movies</h2>
+				<a href="{{ path('app.list-movies') }}" class="board-section-link">See All</a>
+			</div>
+			<div class="hideAtFirst" id="boardMovie" data-controller="movies" data-movies-target="containerMovies" data-movies-get-movies-url-value="{{ path('app.movies') }}">
+
+				<div class="skeleton-section">
+					{% for i in 1..10 %}
+						<div class="skeleton-card">
+							<div class="loader"></div>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+
+
+			{# SHOWS #}
+			<div class="board-section-header">
+				<h2 class="board-section-title">Popular - Shows</h2>
+				{# @TODO: define #}
+				<a href="{{ path('app.list-shows') }}" class="board-section-link">See All</a>
+			</div>
+			<div id="boardShow" data-controller="shows" data-shows-target="containerShows" data-shows-get-shows-url-value="{{ path('app.shows') }}">
+
+				<div class="skeleton-section">
+					{% for i in 1..10 %}
+						<div class="skeleton-card">
+							<div class="loader"></div>
+						</div>
+					{% endfor %}
+				</div>
+
+			</div>
+
+		</main>
+
+	</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{# templates/person/detail.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('homepage') }}
+	{{ encore_entry_link_tags('person') }}
+{% endblock %}
+
+{% block body %}
+	<main class="main">
+		<div
+			class="layout layout--person" data-controller="person" data-person-id-value="{{ details.id }}" data-person-get-filmography-url-value="{{ path('app.person-filmography', {'id': details.id }) }}">
+
+			{# ── PANEL PRINCIPAL ─────────────────────────── #}
+			<div
+				class="main-panel main-panel--person">
+
+				{# POSTER + STATS #}
+				<div class="person-poster-wrap">
+					{% if details.profilePath %}
+						<div class="person-poster">
+							<img src="{{ details.profilePath }}" alt="{{ details.name }}">
+						</div>
+					{% endif %}
+
+					<div class="person-poster-stats">
+						{% if details.birthday %}
+							<div class="person-stat">
+								<span class="person-stat-label">Born</span>
+								<span class="person-stat-value">
+									{{ details.birthday.date|date('d/m/Y') }}
+								</span>
+							</div>
+						{% endif %}
+
+						{% if details.heightCm is defined %}
+							<div class="person-stat">
+								<span class="person-stat-label">Height</span>
+								<span class="person-stat-value">{{ details.heightCm }}
+									cm</span>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				{# ── INFO ──────────────────────────────── #}
+				<div class="person-details">
+					<h1 class="person-name">{{ details.name }}</h1>
+
+					{% if details.placeOfBirth %}
+						<p class="person-birthplace">
+							<i class="fa-solid fa-location-dot"></i>
+							{{ details.placeOfBirth }}
+						</p>
+					{% endif %}
+
+					{% if details.knownForDepartment is defined %}
+						<div class="section">
+							<span class="section-label">Professions</span>
+							<div class="badge-list">
+							{# Is this going to be an array at some point? #}
+								<span class="badge badge--accent">{{ details.knownForDepartment|capitalize }}</span>
+							</div>
+						</div>
+					{% endif %}
+
+					{# ── Biography ── #}
+					{% if details.biography %}
+						<div class="section" style="width:100%">
+							<span class="section-label">Biography</span>
+							<div class="person-bio-wrap">
+								<p class="person-bio" data-person-target="bioText">{{ details.biography }}</p>
+								<div class="person-bio-fade" data-person-target="bioFade"></div>
+								<button class="person-bio-toggle" type="button" data-person-target="bioToggle" data-action="click->person#toggleBio">
+									Read more
+									<i class="fa-solid fa-chevron-down"></i>
+								</button>
+							</div>
+						</div>
+					{% endif %}
+
+				</div>
+			</div>
+
+			{# ── FILMOGRAFÍA ─────────────────────────────── #}
+			<section class="person-filmography">
+				<div class="person-section-header">
+					<h2 class="person-section-title">Filmography</h2>
+				</div>
+				<div id="person-filmography" data-person-target="filmographyContainer">
+					{% block lateral_panel %}{% endblock %}
+				</div>
+			</section>
+
+		</div>
+	</main>
+{% endblock %}

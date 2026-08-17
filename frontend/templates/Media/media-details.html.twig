@@ -1,0 +1,119 @@
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('login_partial') }}
+	{{ encore_entry_link_tags('detail') }}
+{% endblock %}
+
+{% block body %}
+	{% if details.id is defined %}
+		<main class="main" style="--hero-bg: url('{{ details.backdropPath }}')">
+
+			<div class="background"></div>
+
+			<div
+				class="layout">
+
+				<!-- DETAILS PANEL -->
+				<div
+					class="main-panel">
+
+					<!-- LOGO -->
+					<div class="logo-area">
+						{% set name = details.name is defined ? details.name : details.title %}
+
+						{% if images is defined and images.logos %}
+							<img src="{{ images.logos[0].filePath }}" alt="{{ name }}">
+						{% else %}
+							{{ name|upper }}
+						{% endif %}
+					</div>
+
+					<!-- META -->
+					<div class="meta">
+						{% if details.mediaType == 'movies' %}
+							<span>{{ minutes_to_time(details.runtime) }}</span>
+							<span class="meta-dot"></span>
+							<span>{{ details.releaseDate.date|default(null)|date('Y') }}</span>
+						{% elseif details.mediaType == 'shows' %}
+							<span>{{ details.numberOfSeasons }}
+								{{ 'media.details.seasons'|trans }}</span>
+							<span class="meta-dot"></span>
+							<span>{{ details.numberOfEpisodes }}
+								{{ 'media.details.episodes' }}</span>
+							<span class="meta-dot"></span>
+							<span>{{ details.firstAirDate['date']|default(null)|date('Y') }}</span>
+						{% endif %}
+						<span class="meta-dot"></span>
+						<span class="rating">
+							{{ '★' ~ (details.voteAverage)|round(1, 'floor') }}
+						</span>
+
+					</div>
+
+					<!-- GENRES -->
+					<div class="section">
+						<span class="section-label">{{ 'media.details.genres'|trans }}</span>
+						<div class="badge-list">
+							{% for genre in genres %}
+								<a href="{{ path('app.list-movies', {'genres': genre.id}) }}">
+									<span class="badge">{{ genre.name }}</span>
+								</a>
+							{% endfor %}
+						</div>
+					</div>
+
+					<!-- CAST -->
+					<div class="section" data-controller="open-media">
+						<span class="section-label">{{ 'media.details.cast'|trans|upper }}</span>
+
+						<div class="badge-list">
+							{% for star in credits.cast %}
+								<span class="badge" data-action="click->open-media#openPerson" data-open-media-person-url-param="{{ path('app.person-detail', { 'name': star.name }) }}" data-open-media-id-param="{{ star.id }}">
+									{{ star.name }}
+								</span>
+							{% endfor %}
+						</div>
+					</div>
+
+
+					<!-- DIRECTORS -->
+					<div class="section" data-controller="open-media">
+						<span class="section-label">{{ 'media.details.directors'|trans|upper }}</span>
+						<div class="badge-list">
+							{% for director in credits.crew %}
+								<span class="badge" data-action="click->open-media#openPerson" data-open-media-person-url-param="{{ path('app.person-detail', { 'name': director.name }) }}" data-open-media-id-param="{{ director.id }}">
+									{{ director.name }}
+								</span>
+							{% endfor %}
+						</div>
+					</div>
+
+					<!-- OVERVIEW -->
+					<div class="section" data-controller="expandable-text">
+						<span class="section-label">{{ 'media.details.overview'|trans|upper }}</span>
+
+						<div class="description-wrapper">
+							<p data-expandable-text-target="text" class="description overview-description" data-translated-overview="{{ details.overview|trans }}"></p>
+
+							<button type="button" class="btn btn--library expandable-text-toggle" data-action="click->expandable-text#toggle" data-expandable-text-target="toggle" data-expand-text="{{ 'media.details.overview-button.show'|trans }}" data-collapse-text="{{ 'media.details.overview-button.collapse'|trans }}">
+								{{ 'media.details.overview-button.show'|trans }}
+							</button>
+						</div>
+					</div>
+
+					{# ACTIONS #}
+					{% include 'Partials/_media_actions.html.twig' %}
+
+				</div>
+
+				{% block lateral_panel %}{% endblock %}
+
+			</div>
+
+		</main>
+	{% else %}
+
+		<p>{{ 'app.data-not-available' }}</p>
+	{% endif %}
+{% endblock %}

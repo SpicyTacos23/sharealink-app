@@ -1,0 +1,49 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('settings') }}
+{% endblock %}
+
+{% block body %}
+	<div class="settings-root" data-controller="settings avatar">
+
+		<aside class="settings-sidebar">
+
+			<div>
+
+				<div class="settings-profile-icon pointer" data-action="click->avatar#openModal">
+					<img src="{{ asset(avatar) }}" class="profile-img">
+
+					<div class="profile-edit-overlay">
+						✏️
+					</div>
+				</div>
+
+				<div>
+					<i>
+						<p>{{ username }}</p>
+					</i>
+				</div>
+
+				<div class="avatar-modal" data-avatar-target="modal">
+					<div class="avatar-modal-content">
+						<h3>{{ 'settings.avatar.select'|trans }}</h3>
+						<div class="avatar-grid" data-avatar-target="avatarList"></div>
+						<button class="close-btn btn btn-primary" data-action="avatar#closeModal">
+							{{ 'app.close'|trans }}
+						</button>
+					</div>
+				</div>
+
+			</div>
+
+			{% include "Partials/_settings_sidebar.html.twig" %}
+
+		</aside>
+
+		<main class="settings-content" data-settings-target="container"></main>
+
+	</div>
+
+{% endblock %}

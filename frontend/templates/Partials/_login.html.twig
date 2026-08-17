@@ -1,0 +1,77 @@
+<main class="main">
+
+	<div
+		class="layout">
+
+		<!-- PANEL LATERAL -->
+		<div class="side-panel">
+
+
+			<div class="side-header">
+				<span class="side-header-icon">⚡</span>
+				<span class="side-header-title">{{ 'mediaFile.info.login.message-short'|trans() }}</span>
+			</div>
+
+			{# GO BACK BUTTON #}
+			<button class="go-back-btn" data-action="movie-links#loadLinks">
+				<span class="go-back-btn-icon">←</span>
+				{{ 'mediaFile.go-back'|trans() }}
+			</button>
+
+			{# MESSAGE #}
+			<div class="login-warning">
+				<div class="login-warning-icon">⛔</div>
+				<div class="login-warning-text">
+					{{ 'mediaFile.info.login.message'|trans() }}
+				</div>
+			</div>
+
+			{{ form_start(loginForm) }}
+
+			{# FORM #}
+			<div class="form-wrapper form-wrapper--login">
+				<div class="form-card form-card--login">
+
+					<h2 class="form-title">Login</h2>
+
+					<div class="form-fields">
+
+						<div class="form-field">
+							{{ form_widget(loginForm.email, {
+                                'attr': {
+                                    'placeholder': 'Email',
+                                    'class': 'form-input'
+                                }
+                            }) }}
+						</div>
+
+						<div class="form-field">
+							{{ form_widget(loginForm.password, {
+                                'attr': {
+                                    'placeholder': 'Contraseña',
+                                    'class': 'form-input'
+                                }
+                            }) }}
+						</div>
+
+					</div>
+
+					<div class="form-actions">
+						{{ form_widget(loginForm.submit, {
+                            'attr': {
+                                'class': 'form-submit',
+                                'type': 'submit'
+                            }
+                        }) }}
+					</div>
+
+				</div>
+			</div>
+
+			{{ form_end(loginForm) }}
+
+		</div>
+
+	</div>
+
+</main>

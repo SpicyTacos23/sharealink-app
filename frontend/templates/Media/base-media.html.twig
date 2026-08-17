@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('homepage') }}
+	{{ encore_entry_link_tags('detail') }}
+	{{ encore_entry_link_tags('media') }}
+	{{ encore_entry_link_tags('searchbar') }}
+{% endblock %}
+
+{% block body %}
+	<div
+		data-controller="media-list" data-media-list-url-value="{{ block('media_url') }}" class="loader-wrapper">
+
+		{# LOADER #}
+		<div data-media-list-target="loaderOverlay" class="loader-overlay hidden">
+			<div class="loader"></div>
+		</div>
+
+		{# SEARCH BAR #}
+		{% include 'Partials/_media_searchbar.html.twig' %}
+
+		{# FILTERS #}
+		{% include 'Partials/_media_filters.html.twig' %}
+
+		{# CONTENT #}
+		{% block content %}{% endblock %}
+	</div>
+{% endblock %}
+
+{% block media_url %}{% endblock %}

@@ -1,0 +1,22 @@
+<div class="search-box">
+	{{ form_start(searchForm, {
+        'attr': {
+            'class': 'search-form',
+            'id': 'search-form',
+            'data-action': 'submit->media-list#search'
+        }
+    }) }}
+	<div class="search-field">
+		<i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+		{{ form_widget(searchForm.title, {
+                'attr': {
+                    'placeholder': 'media.search.form.title'|trans,
+                    'id': 'query',
+                    'class': 'search-input',
+                    'data-media-list-target': 'searchInput'
+                }
+            }) }}
+	</div>
+	{{ form_widget(searchForm.submit, {'attr': {'class': 'btn btn-primary search-submit'}}) }}
+	{{ form_end(searchForm) }}
+</div>

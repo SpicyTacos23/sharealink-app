@@ -1,0 +1,74 @@
+app:
+  close: Close
+  open: Open
+  login:
+    success: Welcome! You are now logged in.
+
+homepage:
+  loading-data: Loading Data...
+
+header:
+  home: Home
+  movies: Movies
+  shows: Shows
+  discover: Discover
+  library: Library
+  settings: Settings
+
+mediaFile:
+  form:
+    label:
+      server: Server
+      search: Search
+      quality: Quality
+      language: Language
+      link: Link
+      send: Send
+      iframe: Iframe Link (optional +5 coins)
+    
+  info:
+    login:
+      message-short: Log In
+      message: You need a valid user logged in for this action
+    no-media: No streams were found
+
+  go-back: Go Back
+  see-all: See All
+  filter: 
+    genre: Filter by Genre
+
+  table:
+    watch-now: Watch Now
+
+  type:
+    movie: Movie
+    show: Show
+
+media:
+  details:
+    cast: Cast
+    directors: Directors
+    episodes: episodes
+    genres: Genres
+    overview: Overview
+    overview-button:
+      show: Show More
+      collapse: Show Less
+    seasons: seasons
+    season: season
+  no-content: No content available
+  no-content-message: Try adjusting the filters
+  search:
+    form:
+      title: Search for a movie by title or id
+
+settings:
+  profile: Profile
+  library: Library
+  statistics: Statistics
+  settings: Settings
+
+error:
+  generic:
+    title: Something went wrong
+    go-back: Go Back to homepage

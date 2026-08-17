@@ -1,0 +1,35 @@
+<!-- Sección: Popular - Movie -->
+<section class="board-section hideAtFirst" id="board-section" data-controller="carousel">
+
+	<div class="carousel-wrapper">
+
+		<button class="carousel-arrow left" data-action="carousel#prev">‹</button>
+
+		<div class="carousel-track" data-carousel-target="track">
+			{% for element in elements %}
+				<article class="card" 
+					data-controller="open-media" 
+					data-action="click->open-media#openMovie" 
+					data-open-media-movie-url-value="{{ path('app.movie-detail', { 'movie': element.title }) }}" 
+					data-open-media-id-value="{{ element.id }}">
+					<div class="card-poster">
+						<img src="{{ element.backdropPath }}" alt="">
+
+						<div class="card-vote-wrapper">
+							<span class="card-rating">
+								{{ element.voteAverage|number_format(1, '.', '') }}
+							</span>
+						</div>
+					</div>
+					<h3 class="card-title">{{ element.title }}</h3>
+				</article>
+			{% endfor %}
+		</div>
+
+		<button class="carousel-arrow right" data-action="carousel#next">›</button>
+
+		<div class="carousel-fade fade-left"></div>
+		<div class="carousel-fade fade-right"></div>
+
+	</div>
+</section>

@@ -1,0 +1,375 @@
+/* ============================
+    BOARD LAYOUT (solo overrides)
+============================ */
+
+.board {
+    margin: 4em auto;
+    max-width: 1400px;
+}
+
+/* Sección con márgenes laterales amplios */
+.board-section {
+    padding: 0 60px;
+}
+
+/* Grid específico para media */
+.board-section-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 22px;
+    margin-left: 8em;
+    margin-right: 8em;
+}
+
+/* Forzar 8 columnas en pantallas grandes */
+@media(min-width: 1400px) {
+    .board-section-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+/* ============================
+    CARD (solo overrides)
+============================ */
+
+.card {
+    cursor: pointer;
+    /* homepage usa cursor: default */
+}
+
+/* ============================
+    POSTER (solo overrides)
+============================ */
+
+.card-poster {
+    position: relative;
+}
+
+.card-rating {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+
+    background: rgba(0, 0, 0, 0.65);
+    padding: 4px 6px;
+    font-size: 12px;
+    border-radius: 6px;
+
+    color: #ffd95a;
+    /* tono dorado */
+    font-weight: 600;
+
+    z-index: 5;
+}
+
+
+/* ============================
+    TITLE (override mínimo)
+============================ */
+
+.card-title {
+    padding: 8px 9px 0;
+    /* homepage usa padding inferior 10px */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================
+    META (solo media)
+============================ */
+
+.card-meta {
+    padding: 4px 9px;
+    font-size: 12px;
+    color: #cfcfcf;
+
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 32px;
+}
+
+/* ============================
+    PLOT (solo media)
+============================ */
+
+.card-plot {
+    padding: 0 9px 12px;
+    font-size: 12px;
+    color: #bdbdbd;
+    line-height: 1.4;
+
+    max-height: 4.2em;
+    /* ~3 líneas */
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* ============================
+    NO RESULTS
+============================ */
+
+.empty-results {
+    text-align: center;
+    padding: 4em 0;
+    color: #cfcfcf;
+    opacity: 0.85;
+}
+
+.empty-results-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+
+.empty-results-sub {
+    font-size: 14px;
+    color: #9fa2ff;
+}
+
+/* Solo layout para loader + bloque de filtros */
+.loader-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    display: block;
+}
+
+
+/* Loader centrado sin tocar nada más */
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 28px;
+    height: 28px;
+
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #9fa2ff;
+    border-radius: 50%;
+
+    animation: spin 0.8s linear infinite;
+    z-index: 9999 !important;
+}
+
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.25);
+
+    z-index: 999999;
+    /* por encima de todo */
+    pointer-events: none;
+    /* no bloquea clics si no quieres */
+}
+
+.loader-overlay.hidden {
+    display: none;
+}
+
+
+.content--blur {
+    filter: blur(4px);
+    opacity: 0.4;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.extra-block {
+    margin-top: 10px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px 10px;
+    background: #1b1b1b;
+}
+
+.extra-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none;
+}
+
+.extra-toggle {
+    margin-right: 8px;
+    font-size: 18px;
+    line-height: 18px;
+}
+
+.extra-content {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height .25s ease, opacity .25s ease;
+}
+
+.extra-content.open {
+    max-height: 800px;
+    opacity: 1;
+}
+
+.interest-badge {
+    margin: 4px;
+    padding: 4px 8px;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+/* ============================
+    FILTERS PANEL
+============================ */
+/* ============================
+    FILTERS PANEL
+============================ */
+.filters-panel {
+    width: 80.5%;
+    margin: 1.75em auto;
+    padding: 22px 32px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+    .filters-panel {
+        padding: 16px 20px;
+        border-radius: 14px;
+        margin-top: 1.2em;
+    }
+}
+
+.section-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+}
+
+.section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #cfcfcf;
+    white-space: nowrap;
+}
+
+.section-label i {
+    color: #9fa2ff;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 16px;
+    font-size: 13px;
+    line-height: 1.2;
+    color: #cfcfcf;
+    background: transparent;
+    border: 1px solid #2b2c3f;
+    border-radius: 999px;
+    cursor: pointer;
+    user-select: none;
+    transition: color .2s ease, border-color .2s ease, background .2s ease, transform .15s ease;
+}
+
+.badge:hover {
+    color: #ffffff;
+    border-color: #4a4c6e;
+    background: rgba(159, 162, 255, 0.08);
+}
+
+.badge:active {
+    transform: scale(0.96);
+}
+
+.badge.active,
+.badge[aria-pressed="true"] {
+    color: #14141f;
+    background: #9fa2ff;
+    border-color: #9fa2ff;
+    font-weight: 600;
+}
+
+.interests-container {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.interests-container:empty {
+    display: none;
+}
+
+.interest-badge {
+    margin: 0;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #9fa2ff;
+    background: rgba(159, 162, 255, 0.1);
+    border: 1px solid rgba(159, 162, 255, 0.3);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Clear filters */
+.btn-clear-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 11px;
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.btn-clear-filters:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.05);
+}
