@@ -1,0 +1,19 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+    bootstrapFiles:
+        - vendor/autoload.php
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+
+    ignoreErrors:
+        -
+            message: '#Property .*::\$id .* is never assigned int#'
+            reportUnmatched: false
+        -
+            identifier: property.onlyRead
+            path: src/Domain/Entity/*.php

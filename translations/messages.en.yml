@@ -1,0 +1,5 @@
+api:
+  error:
+    missing-field: Mandatory parameter %field% is missing
+  response:
+    created: '%element% created successfully!'
