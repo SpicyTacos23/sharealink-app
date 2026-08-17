@@ -1,0 +1,81 @@
+<section class="board-section">
+	<div class="board-section-header">
+		<h2 class="board-section-title">Filmography</h2>
+	</div>
+
+	<div class="board-section-grid">
+		{% for item in filmography %}
+
+			<article
+				class="card"
+				title="{{ item.movie.title }}"
+				data-controller="open-media"
+
+				{% if item.cast.mediaType == 'movie' %}
+					data-action="click->open-media#openMovie"
+					data-open-media-id-value="{{ item.movie.id }}"
+					data-open-media-movie-url-value="{{ path('app.movie-detail', { movie: item.movie.title|replace({'/': ' '}) }) }}"
+				{% elseif item.cast.mediaType == 'tv' %}
+					data-action="click->open-media#openShow"
+					data-open-media-id-value="{{ item.movie.id }}"
+					data-open-media-show-url-value="{{ path('app.show-detail', { show: item.movie.title|replace({'/': ' '})|default('DEFAULT') }) }}"
+				{% endif %}
+			>
+
+
+				<!-- POSTER -->
+				<div class="card-poster">
+					{% if item.movie.posterPath %}
+						<img src="{{ item.movie.posterPath }}" alt="{{ item.movie.title }}">
+					{% else %}
+						{# <img src="https://images.metahub.space/poster/small/{{ item.movie.id }}/img" alt="{{ item.movie.primaryTitle }}"> #}
+						<img src="{{ item.movie.backdropPath }}" alt="{{ item.movie.title }}">
+					{% endif %}
+				</div>
+
+				<!-- TITLE -->
+				<h3 class="card-title">
+					{{ item.movie.title }}
+				</h3>
+
+				<!-- META -->
+				<div class="card-meta">
+					{# Start year #}
+					{% if item.movie.startYear is defined %}
+						<p class="card-year">{{ item.movie.startYear }}</p>
+					{% endif %}
+
+					{# Genres #}
+					{#
+						{% if item.movie.genres is defined and item.movie.genres|length > 0 %}
+							<p class="card-genres">{{ item.movie.genres|join(', ') }}</p>
+						{% endif %}
+					#}
+
+					{# Rating #}
+					{% if item.movie.rating is defined and item.movie.rating %}
+						<p class="card-rating">⭐
+							{{ item.rating.aggregateRating }}/10</p>
+					{% endif %}
+
+					{# Character played #}
+					{% if item.cast.character is defined %}
+                    <hr>
+						<p class="card-characters">{{ item.cast.character|join(', ') }}</p>
+					{% endif %}
+
+				</div>
+
+			</article>
+
+		{% endfor %}
+
+		{% if filmography is empty %}
+			<div class="empty-results">
+				<p class="empty-results-title">No results available</p>
+				<p class="empty-results-sub">Try adjusting filters or come back later.</p>
+			</div>
+		{% endif %}
+
+	</div>
+</section>

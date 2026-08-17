@@ -1,0 +1,19 @@
+{% extends "Media/media-details.html.twig" %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('movie-detail') }}
+{% endblock %}
+
+{% block lateral_panel %}
+    <!-- PANEL LATERAL -->
+    <div 
+        data-controller="movie-links" 
+        data-movie-links-target="containerMovieLinks" 
+        data-movie-links-get-movie-links-url-value="{{ path('app.links-movie', {'id': details.id}) }}" 
+        data-movie-links-load-form-url-value="{{ path('app.new-media-file') }}"
+        data-movie-links-current-movie-value="{{ details.id }}"
+        data-movie-links-current-movie-image-value="{{ 'https://images.metahub.space/background/medium/' ~ details.imdbId ~ '/img' }}"
+        data-movie-links-current-movie-title-value="{{ details.title }}">
+    </div>
+{% endblock %}

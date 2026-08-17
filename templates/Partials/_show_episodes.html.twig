@@ -1,0 +1,87 @@
+<main class="main">
+	<div
+		class="layout">
+
+		<!-- PANEL LATERAL -->
+		<div class="side-panel">
+
+			<div class="side-header">
+				<span class="side-header-icon">⚡</span>
+				<span class="side-header-title">{{ 'media.details.episodes'|trans }} ({{ data.season.episodes|length }})</span>
+
+				<!-- SEASON SELECTOR -->
+				<div class="season-selector">
+					<select class="season-dropdown" data-action="change->show-episodes#changeSeason">
+						{% for season in 1..data.numberOfSeasons %}
+							<option value="{{ season }}" {% if season == data.currentSeason %} selected {% endif %}>
+								{{ 'media.details.season'|trans }}
+								{{ season }}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+
+			<div class="stream-list">
+
+				{% if data.season.episodes is empty %}
+					<div class="no-streams">
+						<div class="no-streams-icon">📭</div>
+						<div class="no-streams-text">No episodes available</div>
+					</div>
+				{% else %}
+
+					{% for episode in data.season.episodes %}
+						<div
+							class="stream-card episode-card" data-action="click->show-episodes#selectEpisode" data-episode-id="{{ episode.episodeNumber }}">
+
+							<!-- LEFT: IMAGE -->
+							<div class="episode-thumb">
+								{% if episode.stillPath %}
+									<img src="{{ episode.stillPath }}" alt="{{ episode.name }}">
+								{% else %}
+									<div class="episode-thumb-placeholder">🎬</div>
+								{% endif %}
+							</div>
+
+							<!-- CENTER: INFO -->
+							<div class="episode-info">
+								<div class="episode-title">
+									{{ episode.name }}
+								</div>
+
+								<div class="episode-meta">
+									S{{ episode.seasonNumber }}
+									· E{{ episode.episodeNumber }}
+								</div>
+
+								{% if episode.runtimeSeconds is defined and episode.runtimeSeconds %}
+									<div class="episode-runtime">
+										{{ (episode.runtime)|round(0, 'floor') }}
+										min
+									</div>
+								{% endif %}
+
+								{% if episode.voteAverage is defined and episode.voteAverage %}
+									<div class="episode-rating">
+										⭐
+										{{ episode.voteAverage|number_format(1, '.', '') }}
+									</div>
+								{% endif %}
+
+								{% if episode.overview is defined and episode.overview %}
+									<p class="description">{{ episode.overview }}</p>
+								{% endif %}
+							</div>
+
+						</div>
+					{% endfor %}
+
+				{% endif %}
+
+			</div>
+
+		</div>
+
+	</div>
+</main>

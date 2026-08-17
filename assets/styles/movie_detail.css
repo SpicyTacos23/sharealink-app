@@ -1,0 +1,31 @@
+@import "links.css";
+
+.stream-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px; /* separación entre filas */
+    margin-top: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.stream-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.stream-table tbody tr {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.stream-table tbody td {
+    padding: 10px 14px;
+}
+
+.stream-table tbody tr:hover {
+    background: rgba(124, 58, 237, 0.18);
+    border-color: rgba(124, 58, 237, 0.4);
+}

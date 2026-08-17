@@ -1,0 +1,122 @@
+@import "links.css";
+
+/* ─────────────────────────────────────────────── */
+/* EPISODE CARD                                    */
+/* ─────────────────────────────────────────────── */
+
+.episode-card {
+    display: flex;
+    gap: 12px;
+    padding: 10px 6px;
+    border-radius: 8px;
+    transition: background 0.15s ease, transform 0.15s ease;
+    cursor: pointer;
+}
+
+.episode-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(2px);
+}
+
+/* ─────────────────────────────────────────────── */
+/* THUMBNAIL                                       */
+/* ─────────────────────────────────────────────── */
+
+.episode-thumb {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.episode-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ─────────────────────────────────────────────── */
+/* INFO                                            */
+/* ─────────────────────────────────────────────── */
+
+.episode-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0; /* permite truncado */
+}
+
+.episode-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.episode-meta {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* runtime + rating en una misma línea si existen */
+.episode-runtime,
+.episode-rating {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.35);
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.episode-rating {
+    color: #fbbf24;
+}
+
+/* ─────────────────────────────────────────────── */
+/* PLOT (CLAMP PARA EVITAR CARDS ALTAS)            */
+/* ─────────────────────────────────────────────── */
+
+.description {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.25;
+    margin-top: 4px;
+
+    /* Fallback estándar */
+    line-clamp: 2;
+
+    /* Soporte moderno WebKit */
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    /* Fallback legacy */
+    display: -webkit-box;
+    display: box;
+
+    overflow: hidden;
+}
+
+
+/* ─────────────────────────────────────────────── */
+/* SEASON DROPDOWN                                 */
+/* ─────────────────────────────────────────────── */
+
+.season-selector {
+    margin-left: auto;
+}
+
+.season-dropdown {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #1e1e1e;
+    color: #fff;
+    border: 1px solid #333;
+    font-size: 13px;
+    cursor: pointer;
+}

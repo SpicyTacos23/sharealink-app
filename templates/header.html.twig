@@ -1,0 +1,33 @@
+<!-- Top bar -->
+<header class="topbar">
+	<div class="topbar-left">
+		<div class="logo">
+			<a href="{{ path('app.homepage') }}" style="text-decoration: none; color: inherit;">
+				<span class="logo-text">Share @ Link</span>
+			</a>
+		</div>
+		{#
+			<div class="search-box">
+				<input type="text" placeholder="Search">
+			</div>
+		#}
+	</div>
+
+	<nav
+		class="topbar-nav">
+		{# Detect current main process from the parent route and mark the active nav item #}
+		{% set activeSection = activeSection|default(app.request.attributes.get('_route')) %}
+		{% set navItems = [
+			{ label: 'header.home', path: path('app.homepage'), route: 'app.homepage' },
+			{ label: 'header.movies', path: path('app.list-movies'), route: 'app.list-movies' },
+			{ label: 'header.shows', path: path('app.list-shows'), route: 'app.list-shows' },
+			{ label: 'header.discover', path: '#', route: null },
+			{ label: 'header.library', path: '#', route: null },
+			{ label: 'header.settings', path: path('app.settings'), route: 'app.settings' },
+		] %}
+
+		{% for item in navItems %}
+			<a href="{{ item.path }}" class="nav-item{{ item.route == activeSection ? ' nav-item--active' : '' }}">{{ item.label|trans() }}</a>
+		{% endfor %}
+	</nav>
+</header>

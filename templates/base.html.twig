@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}
+				{{ title }}
+			{% endblock %}
+		</title>
+
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+			{{ encore_entry_link_tags('header') }}
+		{% endblock %}
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+
+	</head>
+	<body>
+		{% block header %}
+			{% set headerActive = header_active|default(app.request.attributes.get('_route')) %}
+			{% include 'header.html.twig' with { activeSection: headerActive } %}
+		{% endblock %}
+		
+		{% include "Partials/_flashes.html.twig" %}
+
+		{% block body %}{% endblock %}
+	</body>
+</html>

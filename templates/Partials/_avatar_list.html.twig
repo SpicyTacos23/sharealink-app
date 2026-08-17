@@ -1,0 +1,7 @@
+<div class="avatar-grid">
+    {% for avatar in avatars %}
+        <div class="avatar-option" data-avatar-name="{{ avatar }}">
+            <img src="{{ asset(avatar) }}" alt="avatar">
+        </div>
+    {% endfor %}
+</div>

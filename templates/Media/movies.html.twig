@@ -1,0 +1,7 @@
+{% extends "Media/base-media.html.twig" %}
+
+{% block media_url %}{{ path('app.list-movies-data') }}{% endblock %}
+
+{% block content %}
+<div data-media-list-target="content" class="content hidden"></div>
+{% endblock %}

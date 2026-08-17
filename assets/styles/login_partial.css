@@ -1,0 +1,104 @@
+/* ─────────────────────────────────────────────── */
+/* LOGIN FORM – MINIMALISTA Y PROFESIONAL          */
+/* ─────────────────────────────────────────────── */
+
+@keyframes fadeInLogin {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.side-panel .form-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.side-panel .form-description {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 18px;
+}
+
+/* Campos */
+.side-panel .form-field {
+    margin-bottom: 14px;
+}
+
+.side-panel .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 13px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.side-panel .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.side-panel .form-input:focus {
+    outline: none;
+    border-color: #6c5ce7;
+    background: rgba(255, 255, 255, 0.10);
+}
+
+/* Botón */
+.side-panel .form-submit {
+    width: 100%;
+    padding: 10px 0;
+    background: #4b8bff;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.side-panel .form-submit:hover {
+    background: #5c9aff;
+}
+
+.side-panel .form-submit:active {
+    transform: scale(0.97);
+}
+
+
+/* ─────────────────────────────────────────────── */
+/* LOGIN WARNING – ELEGANTE, MINIMALISTA, SUTIL    */
+/* ─────────────────────────────────────────────── */
+
+.login-warning {
+    margin: 18px 20px 22px;
+    padding: 22px 18px;
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    backdrop-filter: blur(6px);
+}
+
+.login-warning-icon {
+    font-size: 42px;                 /* icono grande */
+    opacity: 0.35;                   /* sutil, elegante */
+    margin-bottom: 10px;
+}
+
+.login-warning-text {
+    font-size: 12px;                 /* letra pequeña */
+    font-style: italic;              /* cursiva elegante */
+    color: rgba(255, 255, 255, 0.45); /* translúcida */
+    line-height: 1.5;
+    max-width: 200px;
+}

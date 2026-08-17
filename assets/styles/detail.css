@@ -1,0 +1,317 @@
+/* ── RESET ─────────────────────────── */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── MAIN ───────────────────────────── */
+.main {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    color: #fff;
+    font-family: var(--font-sans, sans-serif);
+    background: #0d0f1a9e;
+}
+
+/* ── FONDO ──────────────────────────── */
+.main .background {
+    position: absolute;
+    inset: 0;
+    background: var(--hero-bg) center/cover no-repeat;
+    filter: brightness(0.65) saturate(1.1);
+    z-index: 0;
+}
+
+
+/* ── META LINE ───────────────────────── */
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+}
+
+.meta-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.rating {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 6px;
+    padding: 2px 8px;
+    color: #fbbf24;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* ── SECCIONES ───────────────────────── */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+
+/* Overlay más suave */
+.main .background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+            rgba(30, 10, 80, 0.35) 0%,
+            rgba(10, 20, 50, 0.25) 50%,
+            rgba(0, 0, 0, 0.25) 100%);
+}
+
+
+/* ── LAYOUT DOS COLUMNAS ─────────────── */
+.layout {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ── PANEL PRINCIPAL ─────────────────── */
+.main-panel {
+    flex: 1;
+    padding: 40px 44px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ── LOGO ────────────────────────────── */
+.logo-area img {
+    max-width: 220px;
+    max-height: 130px;
+    object-fit: contain;
+    object-position: left;
+}
+
+
+
+/* ── DESCRIPTION ─────────────────────── */
+.description {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.5);
+    max-width: 560px;
+}
+
+.description.overview-description {
+    display: block !important;
+    max-height: calc(1.65em * 4);
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    line-clamp: unset;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
+    word-break: break-word;
+}
+
+.description.overview-description.expanded {
+    max-height: 1600px;
+}
+
+.description-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.expandable-text-toggle {
+    margin-top: 10px;
+    align-self: flex-start;
+    font-size: 12px;
+    padding: 8px 14px;
+}
+
+
+/* ── PANEL LATERAL ───────────────────── */
+.side-panel {
+    width: 720px;
+    flex-shrink: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.28);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Link/stream styles moved to links.css */
+
+
+/* ── BOTONES ─────────────────────────── */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.15s, transform 0.1s;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn--trailer {
+    background: #7c3aed;
+}
+
+.btn--library {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn--icon {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+    border-radius: 10px;
+}
+
+.btn--addons {
+    background: #16a34a;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/*  FORM NEW MEDIA  */
+/* Wrapper centrado */
+.form-wrapper {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Tarjeta del formulario */
+.form-card {
+    background: #1a1b24;
+    padding: 32px 38px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Título */
+.form-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 22px;
+    text-align: center;
+    color: #ffffff;
+}
+
+/* Grupo */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+/* Label */
+.form-group label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+}
+
+/* Input */
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #262739;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 14px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    justify-content: center;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #6c5ce7;
+    background: #2f3046;
+}
+
+/* Acciones */
+.form-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Botón submit */
+.form-submit {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 14px;
+    border-radius: 12px;
+}
+
+/* Back button styles moved to links.css */
+
+
+
+/* Stream list styles moved to links.css */
+
+/* No streams styles moved to links.css */
+
+/* Side footer styles moved to links.css */
+
+
+/* Send button styles moved to links.css */
+
+/* Flag/report icon styles moved to links.css */

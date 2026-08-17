@@ -1,0 +1,20 @@
+{% extends "Media/media-details.html.twig" %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('show-detail') }}
+	{{ encore_entry_link_tags('links') }}
+{% endblock %}
+
+{% block lateral_panel %}
+	<!-- PANEL LATERAL -->
+	<div data-controller="show-episodes show-links"
+		 data-show-episodes-get-show-episodes-url-value="{{ path('app.show-episodes', {'id': details.id}) }}"
+		 data-show-episodes-season-value="1"
+		 data-show-episodes-show-id-value="{{ details.id }}"
+		 data-show-links-get-show-links-url-value="{{ path('app.links-show', {'id': details.id}) }}"
+		 data-show-links-current-show-value="{{ details.id }}">
+
+		<div data-show-episodes-target="containerShowEpisodes"></div>
+	</div>
+{% endblock %}

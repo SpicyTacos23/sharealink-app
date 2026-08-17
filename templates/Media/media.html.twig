@@ -1,0 +1,63 @@
+<section class="board-section" id="board-section-list">
+
+	<div class="board-section-grid">
+
+		{% for element in elements %}
+			{% set mediaName = element.title is defined ? element.title : element.name %}
+			{% if element.type == 'movie' %}
+				{% set controller = 'open-media' %}
+				{% set action = 'click->open-media#openMovie' %}
+				{% set url = path('app.movie-detail', { 'movie': mediaName|replace({'/': ' '}) }) %}
+			{% elseif element.type == 'tv' %}
+				{% set controller = 'open-media' %}
+				{% set action = 'click->open-media#openShow' %}
+				{% set url = path('app.show-detail', { 'show': mediaName|replace({'/': ' '}) }) %}
+			{% else %}
+				{% set controller = '' %}
+				{% set action = '' %}
+				{% set url = '#' %}
+			{% endif %}
+
+			<article class="card" title="{{ mediaName }} {% if element.overview is defined %} — {{ element.overview }}{% endif %}" data-controller="{{ controller }}" data-action="{{ action }}" data-open-media-id-value="{{ element.id }}" {% if element.type == 'movie' %} data-open-media-movie-url-value="{{ url }}" {% else %} data-open-media-show-url-value="{{ url }}" {% endif %}>
+
+				<div class="card-poster">
+					{% if element.posterPath is defined %}
+						<img src="{{ element.posterPath }}" alt="{{ mediaName }}">
+					{% else %}
+						<img src="{{ element.backdropPath }}" alt="{{ mediaName }}">
+					{% endif %}
+
+					{% if element.voteAverage is defined %}
+						<span class="card-rating">
+							⭐
+							{{ (element.voteAverage)|round(1, 'floor') }}
+						</span>
+					{% endif %}
+				</div>
+
+
+				<h3 class="card-title">{{ mediaName }}</h3>
+
+
+				{% set plotText = element.overview ?? '' %}
+				<p class="card-plot">
+					{% if plotText|length > 260 %}
+						{{ plotText|slice(0, 257) ~ '...' }}
+					{% else %}
+						{{ plotText }}
+					{% endif %}
+				</p>
+
+			</article>
+
+		{% endfor %}
+
+		{% if elements is empty %}
+			<div class="empty-results">
+				<p class="empty-results-title">{{ 'media.no-content'|trans }}</p>
+				<p class="empty-results-sub">{{ 'media.no-content-message'|trans }}</p>
+			</div>
+		{% endif %}
+
+	</div>
+</section>

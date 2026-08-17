@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Error
+{% endblock %}
+
+{% block stylesheets %}
+	{{ encore_entry_link_tags('errors') }}
+{% endblock %}
+
+{% block body %}
+	<div class="error-overlay">
+		<div class="error-box">
+			<div class="error-title">
+				{{ 'error.generic.title'|trans }}
+			</div>
+
+			<div class="error-message-box">
+				<div class="error-message">
+					{{ message }}
+				</div>
+			</div>
+
+			<a href="{{ path('app.homepage') }}" class="error-btn">
+				{{ 'error.generic.go-back'|trans }}
+			</a>
+		</div>
+	</div>
+{% endblock %}

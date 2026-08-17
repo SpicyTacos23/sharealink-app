@@ -1,0 +1,70 @@
+<main class="main">
+
+	<div
+		class="layout">
+
+		<!-- PANEL LATERAL -->
+		<div class="side-panel">
+
+			<div class="side-header">
+				<span class="side-header-icon">⚡</span>
+				<span class="side-header-title">Add new Link</span>
+			</div>
+
+			<button class="go-back-btn" data-action="movie-links#loadLinks">
+				<span class="go-back-btn-icon">←</span>
+				{{ 'go-back'|trans() }}
+			</button>
+
+			<div class="form-wrapper">
+				<div class="form-card">
+
+					{{ form_start(newMediaForm, { attr: { class: 'form' } }) }}
+
+					<div class="form-group">
+						{{ form_label(newMediaForm.server) }}
+						{{ form_widget(newMediaForm.server, { attr: { class: 'form-input' } }) }}
+						{{ form_errors(newMediaForm.server) }}
+					</div>
+
+					<div class="form-group">
+						{{ form_label(newMediaForm.quality) }}
+
+						<div class="badge-list form-badge">
+							{% for choice in newMediaForm.quality %}
+								<label class="badge">
+									{{ form_widget(choice, { attr: { class: 'badge-input' } }) }}
+									<span>{{ choice.vars.label }}</span>
+								</label>
+							{% endfor %}
+						</div>
+					</div>
+
+					<div class="form-group">
+						{{ form_label(newMediaForm.language) }}
+						{{ form_widget(newMediaForm.language, { attr: { class: 'form-input language-select' } }) }}
+					</div>
+
+					<div class="form-group">
+						{{ form_label(newMediaForm.link) }}
+						{{ form_widget(newMediaForm.link, { attr: { class: 'form-input' } }) }}
+					</div>
+
+					<div class="form-group">
+						{{ form_label(newMediaForm.iframe) }}
+						{{ form_widget(newMediaForm.iframe, { attr: { class: 'form-input' } }) }}
+					</div>
+
+					<div class="form-actions">
+						{{ form_widget(newMediaForm.submit, { attr: { class: 'btn btn-primary form-submit' } }) }}
+					</div>
+
+					{{ form_end(newMediaForm) }}
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</main>

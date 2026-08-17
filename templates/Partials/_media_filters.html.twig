@@ -1,0 +1,20 @@
+<div class="section filters-panel hidden" data-media-list-target="filters">
+	<div class="section-label-row">
+		<span class="section-label">
+			<i class="fa-solid fa-sliders" aria-hidden="true"></i>
+			{{ 'mediaFile.filter.genre'|trans() }}
+		</span>
+		<button class="btn-clear-filters" type="button" data-action="click->media-list#removeAllFilters">
+			<i class="fa-solid fa-xmark"></i>
+			Clear
+		</button>
+	</div>
+
+	<div class="badge-list">
+		{% for genre in genres %}
+			<span class="badge" data-genre="{{ genre.id }}" data-action="click->media-list#filterByGenre">
+				{{ genre.name }}
+			</span>
+		{% endfor %}
+	</div>
+</div>

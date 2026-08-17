@@ -1,0 +1,62 @@
+{% block stylesheets %}
+	{{ encore_entry_link_tags('app') }}
+	{{ encore_entry_link_tags('user_profiler') }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="settings-container">
+
+		<h1 class="settings-title">Configuración de la cuenta</h1>
+
+		{# ===================== CHANGE USERNAME ===================== #}
+		<section class="settings-section" data-settings-section="username">
+			<h2 class="section-title">Nombre de usuario</h2>
+
+			{{ form_start(usernameForm, { attr: { 'data-settings-form': 'username' } }) }}
+			{{ form_row(usernameForm.username) }}
+			<button type="submit" class="btn-primary">Guardar cambios -t</button>
+			{{ form_end(usernameForm) }}
+		</section>
+
+		{# ===================== CHANGE PASSWORD ===================== #}
+		<section class="settings-section" data-settings-section="password">
+			<h2 class="section-title">Contraseña</h2>
+
+			{{ form_start(passwordForm, { attr: { 'data-settings-form': 'password' } }) }}
+			{{ form_row(passwordForm.currentPassword) }}
+			{{ form_row(passwordForm.newPassword) }}
+			{{ form_row(passwordForm.repeatPassword) }}
+			<button type="submit" class="btn-primary">Actualizar contraseña -t</button>
+			{{ form_end(passwordForm) }}
+		</section>
+
+		{# ===================== WALLET ===================== #}
+		<section class="settings-section wallet-section" data-settings-section="wallet">
+			<h2 class="section-title">
+				<span class="icon">💰</span>
+				Wallet
+			</h2>
+
+			<div class="wallet-box">
+				<div class="wallet-label">Tus coins -t:</div>
+				<div class="wallet-amount">{{ coins }}</div>
+			</div>
+		</section>
+
+		{# ===================== DELETE ACCOUNT ===================== #}
+		<section class="settings-section danger-zone" data-settings-section="delete">
+			<h2 class="section-title">Eliminar cuenta</h2>
+
+			<p class="danger-text">
+				Esta acción es irreversible. Todos tus datos serán eliminados. -t
+			</p>
+
+			{{ form_start(deleteForm, { attr: { 'data-settings-form': 'delete' } }) }}
+			<button type="submit" class="btn-danger">Eliminar cuenta -t</button>
+			{{ form_end(deleteForm) }}
+		</section>
+
+	</div>
+
+{% endblock %}
