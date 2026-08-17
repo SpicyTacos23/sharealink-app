@@ -1,0 +1,7 @@
+sentry:
+    dsn: '%env(SENTRY_DSN)%'
+    register_error_listener: true
+    register_error_handler: true
+    options:
+        environment: '%kernel.environment%'
+        before_send: App\Infrastructure\Monitoring\Sentry\SentryBeforeSend
