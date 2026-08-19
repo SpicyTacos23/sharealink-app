@@ -23,7 +23,6 @@ use App\Enum\MediaType;
 
 class MediaController extends AbstractController
 {
-
     /**
      *  Used in Homepage to load popular movies template
      */
@@ -32,7 +31,7 @@ class MediaController extends AbstractController
     {
         try {
             $getMovies = $getData->getMovies([]);
-            $movies = json_decode($getMovies->getContent(), true);
+            $movies = $this->decodeJsonContent($getMovies->getContent());
         } catch (Exception $ex) {
             return new Response($ex->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
         }
@@ -60,7 +59,7 @@ class MediaController extends AbstractController
         return $this->render('Media/movies.html.twig', [
             'title' => 'Share @ Link - Movies',
             'type' => 'mediaFile.type.movie',
-            'genres' => json_decode($genres->getContent(), true),
+            'genres' => $this->decodeJsonContent($genres->getContent()),
             'mediaType' => 'movie',
             'searchForm' => $searchForm->createView()
         ]);
@@ -75,7 +74,7 @@ class MediaController extends AbstractController
         try {
             $filters = $request->query->all();
             $getMovies = $getData->filterMovies(["filters" => $filters]);
-            $movies = json_decode($getMovies->getContent(), true);
+            $movies = $this->decodeJsonContent($getMovies->getContent());
         } catch (Exception $ex) {
             return new Response($ex->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
         }
@@ -97,13 +96,12 @@ class MediaController extends AbstractController
     {
         try {
             $getShows = $getData->getShows([]);
-            $shows = json_decode($getShows->getContent(), true);
+            $shows = $this->decodeJsonContent($getShows->getContent());
         } catch (Exception $ex) {
             return new Response($ex->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
         }
-
         return $this->render('Partials/_popular_shows.html.twig', [
-            'elements' => new ArrayObject($shows['data']),
+            'elements' => new ArrayObject($shows['content'] ?? []),
             'totalCount' => count($shows)
         ]);
     }
@@ -125,7 +123,7 @@ class MediaController extends AbstractController
         return $this->render('Media/shows.html.twig', [
             'title' => 'Share @ Link - TvShows',
             'type' => 'mediaFile.type.show',
-            'genres' => json_decode($genres->getContent(), true),
+            'genres' => $this->decodeJsonContent($genres->getContent()),
             'mediaType' => 'shows',
             'searchForm' => $searchForm->createView()
         ]);
@@ -140,7 +138,7 @@ class MediaController extends AbstractController
         try {
             $filters = $request->query->all();
             $getShows = $getData->filterShows(["filters" => $filters]);
-            $shows = json_decode($getShows->getContent(), true)['shows'] ?? [];
+            $shows = $this->decodeJsonContent($getShows->getContent())['shows'] ?? [];
         } catch (Exception $ex) {
             return new Response($ex->getMessage(), Response::HTTP_SERVICE_UNAVAILABLE);
         }
@@ -164,7 +162,7 @@ class MediaController extends AbstractController
         if (is_null($id)) {
             $id = $request->query->get('id');
         }
-        $getDetails = $getData->getMediaDetails($id, MediaType::MOVIES);
+        $getDetails = $getData->getMediaDetails($this->toStringParam($id), MediaType::MOVIES);
         if ($getDetails->getStatusCode() !== Response::HTTP_OK) {
             return $this->redirectToRoute('app.error', [
                 'message' => $getDetails->getContent()
@@ -172,13 +170,13 @@ class MediaController extends AbstractController
         }
 
         //Validar response de alguna forma.
-        $details = json_decode($getDetails->getContent(), true);
-        if (!is_array($details) || !isset($details['movie'])) {
+        $details = $this->decodeJsonContent($getDetails->getContent());
+        if (!isset($details['movie'])) {
             return $this->redirectToRoute('app.error', [
                 'message' => $getDetails->getContent()
             ]);
         }
-     
+
         return $this->render('Media/movie-details.html.twig', [
             'title' => 'Share @ Link - Movies',
             'details' => (object)$details['movie']['details'],
@@ -195,13 +193,13 @@ class MediaController extends AbstractController
     public function showDetails(Request $request, GetApiDataInterface $getData): Response
     {
         $id = $request->request->get('id');
-        $getDetails = $getData->getMediaDetails($id, MediaType::SHOWS);
+        $getDetails = $getData->getMediaDetails($this->toStringParam($id), MediaType::SHOWS);
         if ($getDetails->getStatusCode() !== Response::HTTP_OK) {
             return $this->redirectToRoute('app.error', [
                 'message' => $getDetails->getContent()
             ]);
         }
-        $details = json_decode($getDetails->getContent(), true);
+        $details = $this->decodeJsonContent($getDetails->getContent());
         return $this->render('Media/show-details.html.twig', [
             'title' => 'Share @ Link - Shows',
             'details' => $details['details'] ?? [],
@@ -225,11 +223,12 @@ class MediaController extends AbstractController
             ]);
         }
 
-        dump(json_decode($getLinks->getContent(), true));
+        $links = $this->decodeJsonContent($getLinks->getContent());
+        dump($links);
         //@TODO: ID is not longer IMDB id. is tmdb, needs an extra call to get IMDB id if possible.
         //Either way not working. playimdb is patched and no longer streams content
         return $this->render('Partials/_movie_links.html.twig', [
-            'links' => json_decode($getLinks->getContent(), true),
+            'links' => $links,
             'movieId' => $id
         ]);
     }
@@ -242,7 +241,7 @@ class MediaController extends AbstractController
     {
         $season = (int) ($request->query->get('season') ?? 1);
         $seasonDetails = $getData->getShowEpisodes($id, $season);
-        $details = json_decode($seasonDetails->getContent(), true) ?? [];
+        $details = $this->decodeJsonContent($seasonDetails->getContent());
         $details['currentSeason'] = $season;
 
         return $this->render(
@@ -270,7 +269,7 @@ class MediaController extends AbstractController
         }
 
         return $this->render('Partials/_show_links.html.twig', [
-            'links' => json_decode($getLinks->getContent(), true),
+            'links' => $this->decodeJsonContent($getLinks->getContent()),
             'showId' => $id,
             'season' => $season,
             'episode' => $episode
@@ -339,7 +338,7 @@ class MediaController extends AbstractController
 
         //Get Media Data
         $mediaData = $getApiData->getMediaDetails($mediaId, MediaType::MOVIES);
-        $media = json_decode($mediaData->getContent(), true);
+        $media = $this->decodeJsonContent($mediaData->getContent());
 
         $link = null;
 
@@ -352,8 +351,8 @@ class MediaController extends AbstractController
                 //Validate coins -- true for now
                 $validCoins = true;
                 try {
-                    $link = $handleStream->handleMediaStream((int)$linkId);
-                    $link = json_decode($link->getContent(), true);
+                    $linkResponse = $handleStream->handleMediaStream((int)$linkId);
+                    $link = $this->decodeJsonContent($linkResponse->getContent());
                 } catch (MediaStreamException $mediaStreamEx) {
                     return new JsonResponse($mediaStreamEx->getMessage(), Response::HTTP_BAD_REQUEST);
                 } catch (UserNotLoggedException $userException) {
@@ -381,7 +380,7 @@ class MediaController extends AbstractController
     public function personDetails(Request $request, GetApiDataInterface $getData): Response
     {
         $id = $request->request->get('id');
-        $getDetails = $getData->getPersonDetails($id);
+        $getDetails = $getData->getPersonDetails($this->toStringParam($id));
 
         if ($getDetails->getStatusCode() !== Response::HTTP_OK) {
             return $this->redirectToRoute('app.error', [
@@ -390,7 +389,7 @@ class MediaController extends AbstractController
         }
         return $this->render('Media/person-details.html.twig', [
             'title' => 'Share @ Link - Person',
-            'details' => json_decode($getDetails->getContent(), true)
+            'details' => $this->decodeJsonContent($getDetails->getContent())
         ]);
     }
 
@@ -406,7 +405,7 @@ class MediaController extends AbstractController
                 'message' => $getFilmography->getContent()
             ]);
         }
-        $filmography = json_decode($getFilmography->getContent(), true);
+        $filmography = $this->decodeJsonContent($getFilmography->getContent());
         dump($filmography);
         return $this->render('Partials/_person_filmography.html.twig', [
             'filmography' => $filmography
@@ -417,13 +416,13 @@ class MediaController extends AbstractController
     public function findMedia(Request $request, GetApiDataInterface $getData): Response
     {
         $query = $request->query->all('search_title');
-        if (is_null($query) || empty($query)) {
+        if (empty($query)) {
             $this->addFlash('warning', 'Please enter a title to search');
             return $this->redirectToRoute('app.list-movies');
         }
         $getMedia = $getData->findMedia($query['title'], $query['mediaType']);
 
-        $elements = json_decode($getMedia->getcontent(), true);
+        $elements = $this->decodeJsonContent($getMedia->getContent());
         if ($getMedia->getStatusCode() !== Response::HTTP_OK) {
             $this->addFlash('warning', $getMedia->getContent());
             $elements = [];
@@ -436,5 +435,41 @@ class MediaController extends AbstractController
             'totalCount' => count($elements),
             'filters' => []
         ]);
+    }
+
+    /**
+     * Decodes a JSON response body safely, always returning an array.
+     *
+     * @return array<mixed>
+     */
+    private function decodeJsonContent(string|false $content): array
+    {
+        if ($content === false) {
+            return [];
+        }
+
+        $decoded = json_decode($content, true);
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * Normalizes a request parameter (mixed) into a string.
+     */
+    private function toStringParam(mixed $value): string
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if ($value === null) {
+            return '';
+        }
+
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+
+        return '';
     }
 }

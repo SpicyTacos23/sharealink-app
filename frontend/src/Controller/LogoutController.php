@@ -14,7 +14,7 @@ class LogoutController extends AbstractController
         private JwtValidatorInterface $jwtEncoder
     ) {}
 
-    #[Route('/logout', name: 'logout')]
+    #[Route('/logout', name: 'app.logout')]
     public function logout(): Response
     {
         $response = new Response();

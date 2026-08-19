@@ -106,9 +106,7 @@ class GetApiData implements GetApiDataInterface
 
     public function getShowLinks(string $id, int $season, int $episode): JsonResponse
     {
-        $response = $this->client->request('GET', $this->apiBaseUrl . '/api/v1/show/links', [
-            'json' => ['id' => $id, 'season' => $season, 'episode' => $episode]
-        ]);
+        $response = $this->client->request('GET', $this->apiBaseUrl . "/api/v1/tmdb/shows/{$id}/links?season={$season}&episode={$episode}");
 
         return new JsonResponse(json_decode($response->getContent(), true));
     }

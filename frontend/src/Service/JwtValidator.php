@@ -43,7 +43,13 @@ class JwtValidator implements JwtValidatorInterface
 
     public function getToken(): ?string
     {
-        return $this->requestStack->getCurrentRequest()->cookies->get('userAuthToken');
+        $request = $this->requestStack->getCurrentRequest();
+
+        if ($request === null) {
+            return null;
+        }
+
+        return $request->cookies->get('userAuthToken');
     }
 
     public function removeAuthToken(Response $response): void

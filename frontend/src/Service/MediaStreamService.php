@@ -32,18 +32,30 @@ class MediaStreamService implements MediaStreamInterface
         $hasAccess = true;
 
         //Validate Link
-        $link = $this->apiData->getLinkDetails($id, $this->jwtValidator->getToken());
-        $content = json_decode($link->getContent(), true);
-        if (empty($content)) {
+        $link = $this->apiData->getLinkDetails($id, $this->jwtValidator->getToken() ?? '');
+        $content = $link->getContent();
+
+        if ($content === false || $content === '') {
             throw new MediaStreamException("Invalid link provided!");
-        } elseif (empty($content['link'])) {
+        }
+
+        $decodedContent = json_decode($content, true);
+        $decodedContent = is_array($decodedContent) ? $decodedContent : [];
+
+        if (empty($decodedContent['link'])) {
             throw new MediaStreamException("Media has no Link available!");
         }
 
-        $content = [
-            "link" => $content['link'],
-            "iframe" => $content['iframeLink'] ?? null
+        $responseContent = [
+            "link" => $decodedContent['link'],
+            "iframe" => $decodedContent['iframeLink'] ?? null
         ];
-        return new Response(json_encode($content), Response::HTTP_OK);
+
+
+        $encoded = json_encode($responseContent);
+        if ($encoded === false) {
+            $encoded = null;
+        }
+        return new Response($encoded, Response::HTTP_OK);
     }
 }

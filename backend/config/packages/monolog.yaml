@@ -4,7 +4,6 @@ monolog:
         - api_error # Used directly from services if external api has failed
         - sentry # Used for automatic sentry exceptions
         - messenger # Used for errors caused by messenger handler
-        - cache # Used to silence noisy cache heartbeat logs (e.g. zenstruck/messenger-monitor)
 
 when@dev:
     monolog:
@@ -13,12 +12,12 @@ when@dev:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
-                channels: ["!event", "!cache"]
+                channels: ["!event"]
                 max_files: 10
             console:
                 type: console
                 process_psr_3_messages: false
-                channels: ["!event", "!doctrine", "!console", "!cache"]
+                channels: ["!event", "!doctrine", "!console"]
             api_error:
                 type: fingers_crossed
                 action_level: error
@@ -36,16 +35,12 @@ when@dev:
                 level: error
                 bubble: true
                 channels: ['sentry', 'messenger']
+            
             messenger:
                 type: stream
                 path: "%kernel.logs_dir%/messenger/%kernel.environment%.messenger_error.log"
                 level: error
                 channels: ["messenger"]
-            cache:
-                type: stream
-                path: "%kernel.logs_dir%/cache/%kernel.environment%.cache.log"
-                level: warning
-                channels: ["cache"]
 
 when@test:
     monolog:

@@ -45,11 +45,15 @@ class LoginController extends AbstractController
                 return $this->redirectToRoute('app.login');
             }
 
+            $url = $this->generateUrl('app.homepage');
             if ($request->query->getBoolean('partial')) {
                 $url = $referer;
-            } else {
-                $url = $this->generateUrl('app.homepage');
-            }
+            } 
+
+            if (!is_string($url)) {
+            throw new \LogicException('Expected kernel.project_dir to be a string.');
+        }
+
             $response = new RedirectResponse($url);
             $response->headers->setCookie($cookie);
             $this->addFlash('success', $translator->trans('app.login.success'));

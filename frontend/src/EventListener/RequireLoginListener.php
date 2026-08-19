@@ -15,7 +15,7 @@ class RequireLoginListener
         private UrlGeneratorInterface $urlGenerator
     ) {}
 
-    public function __invoke(ControllerEvent $event)
+    public function __invoke(ControllerEvent $event): void
     {
         $controller = $event->getController();
 

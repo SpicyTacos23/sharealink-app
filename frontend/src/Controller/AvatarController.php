@@ -18,8 +18,14 @@ final class AvatarController extends SettingsController
     #[Route('list', name: 'app.settings.get-avatars', methods: ['GET'])]
     public function getAvatars(AvatarProviderInterface $avatarProvider): Response
     {
+        $projectDir = $this->getParameter('kernel.project_dir');
+
+        if (!is_string($projectDir)) {
+            throw new \LogicException('Expected kernel.project_dir to be a string.');
+        }
+
         return $this->render('Partials/_avatar_list.html.twig', [
-            'avatars' => $avatarProvider->getAllAvatars($this->getParameter('kernel.project_dir'))
+            'avatars' => $avatarProvider->getAllAvatars($projectDir)
         ]);
     }
 
@@ -33,9 +39,9 @@ final class AvatarController extends SettingsController
             return new JsonResponse(['error' => 'No avatar provided'], 400);
         }
 
-        $userPayload = $jwt->getValidTokenPayload();
+        //$userPayload = $jwt->getValidTokenPayload();
         try {
-            $userRepository->updateUserAvatar(basename($avatar), $jwt->getToken());
+            $userRepository->updateUserAvatar(basename($avatar), $jwt->getToken() ?? '');
             $this->addFlash('success', "settings.avatar.change-success");
         } catch (ErrorException $errEx) {
             $this->addFlash('danger', $errEx->getMessage());

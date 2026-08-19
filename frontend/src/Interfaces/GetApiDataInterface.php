@@ -7,8 +7,14 @@ use App\Enum\MediaType;
 
 interface GetApiDataInterface
 {
+    /**
+     * @param array<mixed> $filters
+     */
     public function getMovies(array $filters): JsonResponse;
     public function getPopularShows(): JsonResponse;
+    /**
+     * @param array<mixed> $filters
+     */
     public function getShows(array $filters): JsonResponse;
     public function getMediaDetails(string $id, MediaType $mediaType): JsonResponse;
     public function getPersonDetails(string $id): JsonResponse;
@@ -25,6 +31,12 @@ interface GetApiDataInterface
     public function getMovieGenres(): JsonResponse;
     public function getShowGenres(): JsonResponse;
     public function findMedia(string $query, string $mediaType): JsonResponse;
+    /**
+     * @param array<mixed> $filters
+     */
     public function filterMovies(array $filters): JsonResponse;
+    /**
+     * @param array<mixed> $filters
+     */
     public function filterShows(array $filters): JsonResponse;
 }

@@ -8,6 +8,9 @@ use App\Exception\LoginErrorException;
 
 class RemoteLoginApi implements RemoteLoginApiInterface
 {
+    /**
+     * @param array<mixed> $data
+     */
     public function getToken(array $data): Cookie
     {
         $response = $this->callRemoteLogin($data['email'], $data['password']);
@@ -26,6 +29,9 @@ class RemoteLoginApi implements RemoteLoginApiInterface
     }
 
 
+    /**
+     * @return array<mixed>
+     */
     private function callRemoteLogin(string $email, string $password): array
     {
         $client = new \Symfony\Component\HttpClient\HttpClient();

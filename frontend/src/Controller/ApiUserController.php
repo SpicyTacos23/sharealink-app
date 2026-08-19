@@ -41,7 +41,6 @@ class ApiUserController extends SettingsController
         ]);
     }
 
-
     #[Route('update-username', name: 'app.settings.update_username', methods: ['POST'])]
     public function updateUsername(
         Request $request,
@@ -56,6 +55,10 @@ class ApiUserController extends SettingsController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (empty($userPayload) || is_null($userPayload['email']) || is_null($jwtValidator->getToken())) {
+                $this->addFlash('warning', 'Credentials expired, please log in again.');
+                return $this->redirectToRoute('app.login');
+            }
             $userApi->updateUsername(
                 $userPayload['email'],
                 $form->get('username')->getData(),
@@ -80,6 +83,10 @@ class ApiUserController extends SettingsController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (empty($userPayload) || is_null($userPayload['email']) || is_null($jwtValidator->getToken())) {
+                $this->addFlash('warning', 'Credentials expired, please log in again.');
+                return $this->redirectToRoute('app.login');
+            }
             $userApi->updatePassword(
                 $userPayload['email'],
                 $form->get('newPassword')->getData(),
