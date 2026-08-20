@@ -11,6 +11,6 @@ controllers:
     resource: routing.controllers
     type: attribute
 
-api_login:
-    path: /api/v1/auth/login
-    methods: POST
+#api_login:
+#    path: /api/v1/auth/login
+#    methods: POST
