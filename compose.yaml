@@ -13,7 +13,7 @@ services:
     environment:
       APP_ENV: dev
       APP_SECRET: devsecret
-      DATABASE_URL: "mysql://mediaTest:Test123.@mysql:3306/mediaBridge?serverVersion=mariadb-11.8.8&charset=utf8mb4"
+      DATABASE_URL: "mysql://SLUser:MzQCP7PImhVhWv29Ugex8feY@mysql:3306/SLDB?serverVersion=mariadb-11.8.8&charset=utf8mb4"
       REDIS_URL: "redis://redis:6379"
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"
@@ -41,7 +41,7 @@ services:
     environment:
       APP_ENV: dev
       APP_SECRET: devsecret
-      DATABASE_URL: "mysql://mediaTest:Test123.@mysql:3306/mediaBridge?serverVersion=8.0&charset=utf8mb4"
+      DATABASE_URL: "mysql://SLUser:MzQCP7PImhVhWv29Ugex8feY@mysql:3306/SLDB?serverVersion=mariadb-11.8.8&charset=utf8mb4"
       REDIS_URL: "redis://redis:6379"
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"
@@ -55,9 +55,9 @@ services:
     image: mariadb:11
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mediaBridge
-      MYSQL_USER: mediaTest
-      MYSQL_PASSWORD: Test123.
+      MYSQL_DATABASE: SLDB
+      MYSQL_USER: SLUser
+      MYSQL_PASSWORD: MzQCP7PImhVhWv29Ugex8feY
     container_name: mediabridge_mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
