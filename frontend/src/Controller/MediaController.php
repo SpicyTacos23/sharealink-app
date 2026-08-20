@@ -224,7 +224,7 @@ class MediaController extends AbstractController
         }
 
         $links = $this->decodeJsonContent($getLinks->getContent());
-        dump($links);
+
         //@TODO: ID is not longer IMDB id. is tmdb, needs an extra call to get IMDB id if possible.
         //Either way not working. playimdb is patched and no longer streams content
         return $this->render('Partials/_movie_links.html.twig', [
@@ -361,15 +361,13 @@ class MediaController extends AbstractController
             }
         }
 
-        dump($media);
-
         //template
         return $this->render('Media/stream-media.html.twig', [
-            'title' => 'Streaming Now ' . $media['movie']['details']['title'],
+            'title' => 'Streaming Now ' . ($media['movie']['details']['title'] ?? ''),
             'form' => $confirmTokenForm->createView(),
             'link' => $link['link'] ?? null,
             'iframe' => $link['iframe'] ?? null,
-            'media' => $media['movie']['details']
+            'media' => ($media['movie']['details']) ?? null,
         ]);
     }
 
