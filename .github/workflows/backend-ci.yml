@@ -44,12 +44,16 @@ jobs:
           extensions: ctype, iconv, intl, mbstring, pdo_mysql, redis, zip, dom, xml, xmlwriter
           tools: composer:v2
 
-      - name: Resolve Symfony 8.1 dependencies
-        if: github.event_name == 'pull_request'
-        run: composer update --with-all-dependencies --prefer-dist --no-interaction --no-progress --no-scripts
+      - name: Resolve Symfony 8.1 dependencies when the lockfile is stale
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ] || ! composer validate --no-check-publish >/dev/null 2>&1; then
+            composer update --with-all-dependencies --prefer-dist --no-interaction --no-progress --no-scripts
+          else
+            echo "Composer manifest and lockfile are already synchronized."
+          fi
 
       - name: Commit resolved Composer lockfile
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         run: |
           if git diff --quiet -- composer.lock symfony.lock; then
             echo "Composer lockfiles are already up to date."
@@ -60,7 +64,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add composer.json composer.lock symfony.lock
           git commit -m "build(backend): lock Symfony 8.1 dependencies"
-          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref || github.ref_name }}"
 
       - name: Install locked dependencies
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts
