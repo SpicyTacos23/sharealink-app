@@ -55,7 +55,7 @@ jobs:
       - name: Commit resolved Composer lockfile
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          if git diff --quiet -- composer.lock symfony.lock; then
+          if git diff --quiet -- composer.json composer.lock symfony.lock; then
             echo "Composer lockfiles are already up to date."
             exit 0
           fi
