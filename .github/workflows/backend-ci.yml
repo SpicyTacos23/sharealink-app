@@ -3,15 +3,17 @@ name: Backend CI
 on:
   pull_request:
     branches:
-      - main
+      - dev/cqrs-transform
     paths:
       - "backend/**"
+      - "compose.yaml"
       - ".github/workflows/backend-ci.yml"
   push:
     branches:
-      - main
+      - dev/cqrs-transform
     paths:
       - "backend/**"
+      - "compose.yaml"
       - ".github/workflows/backend-ci.yml"
 
 permissions:
@@ -23,17 +25,22 @@ concurrency:
 
 jobs:
   backend:
-    name: PHP 8.4 / Symfony 8.1
+    name: Backend checks
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: backend
+    env:
+      APP_SECRET: ci-only-secret
+      APP_ENV: test
+      COMPOSE_PROGRESS: quiet
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up PHP 8.4
+      - name: PHP 8.4
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
@@ -41,26 +48,41 @@ jobs:
           extensions: ctype, iconv, intl, mbstring, pdo_mysql, redis, zip, dom, xml, xmlwriter
           tools: composer:v2
 
-      - name: Install locked dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --no-scripts
+      - name: Install dependencies
+        run: composer install --quiet --prefer-dist --no-interaction --no-scripts
 
-      - name: Validate Composer configuration
-        run: composer validate --strict --no-check-publish
+      - name: Validate Composer
+        run: composer validate --quiet --strict --no-check-publish
 
       - name: Clear Symfony cache
-        env:
-          APP_ENV: dev
-          APP_SECRET: ci-only-secret
-        run: php bin/console cache:clear --no-warmup --no-interaction
+        run: php bin/console cache:clear --no-warmup --no-interaction --quiet
 
-      - name: Run PHPUnit
-        env:
-          APP_ENV: test
-          APP_SECRET: ci-only-secret
+      - name: PHPUnit
         run: vendor/bin/phpunit --configuration phpunit.dist.xml
 
-      - name: Run PHPStan
+      - name: PHPStan
         run: vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress
 
-      - name: Build backend Docker image
-        run: docker build --tag sharealink-backend:ci .
+      - name: Build Docker image
+        run: docker compose -f ../compose.yaml build --quiet backend
+
+      - name: Start backend and dependencies
+        run: docker compose -f ../compose.yaml up --detach --no-build --quiet-pull backend
+
+      - name: Check backend health
+        run: |
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent http://localhost:8081/api/doc >/dev/null; then
+              echo "Backend OK"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "Backend health check failed"
+          docker compose -f ../compose.yaml logs --tail=40 backend
+          exit 1
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f ../compose.yaml down --volumes --remove-orphans --timeout 10
