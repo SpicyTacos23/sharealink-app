@@ -1,0 +1,90 @@
+name: Backend CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+  push:
+    branches:
+      - chore/symfony-8.1-migration
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: PHP 8.4 / Symfony 8.1
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          extensions: ctype, iconv, intl, mbstring, pdo_mysql, redis, zip, dom, xml, xmlwriter
+          tools: composer:v2
+
+      - name: Resolve Symfony 8.1 dependencies
+        if: github.event_name == 'pull_request'
+        run: composer update --with-all-dependencies --prefer-dist --no-interaction --no-progress --no-scripts
+
+      - name: Install locked dependencies
+        if: github.event_name == 'push'
+        run: composer install --prefer-dist --no-interaction --no-progress --no-scripts
+
+      - name: Validate Composer configuration
+        run: composer validate --strict --no-check-publish
+
+      - name: Clear Symfony cache
+        env:
+          APP_ENV: dev
+          APP_SECRET: ci-only-secret
+        run: php bin/console cache:clear --no-warmup --no-interaction
+
+      - name: Run PHPUnit
+        env:
+          APP_ENV: test
+          APP_SECRET: ci-only-secret
+        run: vendor/bin/phpunit --configuration phpunit.dist.xml
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress
+
+      - name: Build backend Docker image
+        run: docker build --tag sharealink-backend:ci .
+
+      - name: Commit resolved Composer lockfile
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- composer.lock symfony.lock; then
+            echo "Composer lockfiles are already up to date."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add composer.lock symfony.lock
+          git commit -m "build(backend): lock Symfony 8.1 dependencies"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
