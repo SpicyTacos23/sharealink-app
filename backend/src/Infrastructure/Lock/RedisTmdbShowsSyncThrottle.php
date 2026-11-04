@@ -22,6 +22,6 @@ final class RedisTmdbShowsSyncThrottle implements ShowsSyncThrottleInterface
 
         $nextAvailable = (new \DateTimeImmutable())->modify("+{$ttl} seconds");
 
-        return $nextAvailable !== false ? $nextAvailable : null;
+        return $nextAvailable;
     }
 }
