@@ -6,32 +6,27 @@ use App\Application\Encoder\TmdbCacheKeyGeneratorInterface;
 use App\Application\Lock\ShowsSyncThrottleInterface;
 use App\Application\Messenger\Media\Message\SyncShowsFromCacheMessage;
 use App\Application\Messenger\Media\Trigger\TriggerTmdbShowsSyncHandler;
-use App\Domain\ApiCaller\Tmdb\TmdbApiCallerInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\InMemoryStore;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
- * IMPORTANTE: usamos InMemoryStore en lugar de Redis real.
- * InMemoryStore respeta TTL con el reloj real del sistema, así que replica
- * el comportamiento de mutex + cooldown sin necesitar infraestructura,
- * siempre que el test se ejecute en menos tiempo que el TTL configurado.
+ * Uses InMemoryStore instead of a real Redis instance.
  */
 final class TriggerShowsSyncHandlerTest extends TestCase
 {
     private LockFactory $lockFactory;
-    private MessageBusInterface&\PHPUnit\Framework\MockObject\MockObject $bus;
-    private TmdbApiCallerInterface&\PHPUnit\Framework\MockObject\MockObject $apiCaller;
-    private ShowsSyncThrottleInterface&\PHPUnit\Framework\MockObject\MockObject $throttle;
-    private TmdbCacheKeyGeneratorInterface&\PHPUnit\Framework\MockObject\MockObject $keyGenerator;
+    private MessageBusInterface&MockObject $bus;
+    private ShowsSyncThrottleInterface&MockObject $throttle;
+    private TmdbCacheKeyGeneratorInterface&MockObject $keyGenerator;
 
     protected function setUp(): void
     {
         $this->lockFactory = new LockFactory(new InMemoryStore());
         $this->bus = $this->createMock(MessageBusInterface::class);
-        $this->apiCaller = $this->createMock(TmdbApiCallerInterface::class);
         $this->throttle = $this->createMock(ShowsSyncThrottleInterface::class);
         $this->keyGenerator = $this->createMock(TmdbCacheKeyGeneratorInterface::class);
     }
@@ -41,7 +36,6 @@ final class TriggerShowsSyncHandlerTest extends TestCase
         return new TriggerTmdbShowsSyncHandler(
             $this->lockFactory,
             $this->bus,
-            $this->apiCaller,
             $this->keyGenerator,
             $this->throttle,
         );
@@ -49,17 +43,25 @@ final class TriggerShowsSyncHandlerTest extends TestCase
 
     public function testFirstCallAcquiresLockAndDispatchesMessage(): void
     {
-        $this->apiCaller->expects(self::once())
-            ->method('getShowsWithFilters')
-            ->with([]);
+        $this->keyGenerator->expects(self::once())
+            ->method('forShows')
+            ->with([])
+            ->willReturn('shows_cache_key');
 
         $this->bus->expects(self::once())
             ->method('dispatch')
-            ->with(self::isInstanceOf(SyncShowsFromCacheMessage::class))
-            ->willReturn(new Envelope(new SyncShowsFromCacheMessage('shows_' . md5('[]'))));
+            ->with(
+                self::callback(static fn(object $message): bool =>
+                    $message instanceof SyncShowsFromCacheMessage
+                    && $message->cacheKey === 'tmdb_shows_cache_key'
+                ),
+                self::isType('array'),
+            )
+            ->willReturnCallback(static fn(object $message, array $stamps = []): Envelope =>
+                new Envelope($message, $stamps)
+            );
 
-        $handler = $this->makeHandler();
-        $result = $handler->handle([]);
+        $result = $this->makeHandler()->handle([]);
 
         self::assertTrue($result->dispatched);
         self::assertFalse($result->isAlreadyRunning());
@@ -68,11 +70,16 @@ final class TriggerShowsSyncHandlerTest extends TestCase
 
     public function testSecondCallWithinCooldownIsBlockedAndDoesNotDispatchAgain(): void
     {
-        // El mensaje solo debe dispatcharse UNA vez en total, no dos.
-        $this->bus->expects(self::once())->method('dispatch')
-            ->willReturn(new Envelope(new SyncShowsFromCacheMessage('irrelevant')));
+        $this->keyGenerator->expects(self::once())
+            ->method('forShows')
+            ->with([])
+            ->willReturn('shows_cache_key');
 
-        $this->apiCaller->expects(self::once())->method('getShows');
+        $this->bus->expects(self::once())
+            ->method('dispatch')
+            ->willReturnCallback(static fn(object $message, array $stamps = []): Envelope =>
+                new Envelope($message, $stamps)
+            );
 
         $nextAvailableAt = (new \DateTimeImmutable())->modify('+8 hours');
         $this->throttle->expects(self::once())
@@ -84,8 +91,6 @@ final class TriggerShowsSyncHandlerTest extends TestCase
         $first = $handler->handle([]);
         self::assertTrue($first->dispatched);
 
-        // Segunda llamada inmediata: el mismo LockFactory (misma instancia,
-        // mismo InMemoryStore) todavía tiene el lock activo.
         $second = $handler->handle([]);
 
         self::assertFalse($second->dispatched);
@@ -96,13 +101,20 @@ final class TriggerShowsSyncHandlerTest extends TestCase
 
     public function testAlreadyRunningWithoutThrottleDataReturnsNullRetryAfter(): void
     {
-        $this->bus->expects(self::once())->method('dispatch')
-            ->willReturn(new Envelope(new SyncShowsFromCacheMessage('irrelevant')));
+        $this->keyGenerator->expects(self::once())
+            ->method('forShows')
+            ->with([])
+            ->willReturn('shows_cache_key');
 
-        $this->apiCaller->expects(self::once())->method('getShows');
+        $this->bus->expects(self::once())
+            ->method('dispatch')
+            ->willReturnCallback(static fn(object $message, array $stamps = []): Envelope =>
+                new Envelope($message, $stamps)
+            );
 
-        // Simulamos que el throttle no tiene datos (p.ej. Redis desincronizado)
-        $this->throttle->method('nextAvailableAt')->willReturn(null);
+        $this->throttle->expects(self::once())
+            ->method('nextAvailableAt')
+            ->willReturn(null);
 
         $handler = $this->makeHandler();
         $handler->handle([]);

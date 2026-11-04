@@ -22,7 +22,7 @@ final class RedisTmdbMoviesSyncThrottle implements MoviesSyncThrottleInterface
 
         $nextAvailable = (new \DateTimeImmutable())->modify("+{$ttl} seconds");
 
-        return $nextAvailable !== false ? $nextAvailable : null;
+        return $nextAvailable;
     }
 
 }
