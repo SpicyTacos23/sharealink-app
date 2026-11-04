@@ -8,18 +8,21 @@ use App\Domain\Entity\Movie;
 use App\Domain\Repository\MovieRepositoryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 
 final class SyncTmdbMoviesFromCacheHandlerTest extends TestCase
 {
-    private CacheInterface&MockObject $cache;
+    private CacheItemPoolInterface&MockObject $cache;
+    private CacheItemInterface&MockObject $cacheItem;
     private MovieRepositoryInterface&MockObject $movieRepository;
     private LoggerInterface&MockObject $logger;
 
     protected function setUp(): void
     {
-        $this->cache = $this->createMock(CacheInterface::class);
+        $this->cache = $this->createMock(CacheItemPoolInterface::class);
+        $this->cacheItem = $this->createMock(CacheItemInterface::class);
         $this->movieRepository = $this->createMock(MovieRepositoryInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
     }
@@ -38,12 +41,13 @@ final class SyncTmdbMoviesFromCacheHandlerTest extends TestCase
         $message = new SyncMoviesFromCacheMessage('tmdb_movies_cache_key');
 
         $this->cache->expects(self::once())
-            ->method('get')
-            ->with(
-                $message->cacheKey,
-                self::callback(static fn($callback): bool => is_callable($callback)),
-            )
-            ->willReturn(null);
+            ->method('getItem')
+            ->with($message->cacheKey)
+            ->willReturn($this->cacheItem);
+
+        $this->cacheItem->expects(self::once())
+            ->method('isHit')
+            ->willReturn(false);
 
         $this->logger->expects(self::once())
             ->method('warning')
@@ -86,11 +90,16 @@ final class SyncTmdbMoviesFromCacheHandlerTest extends TestCase
         ];
 
         $this->cache->expects(self::once())
+            ->method('getItem')
+            ->with($message->cacheKey)
+            ->willReturn($this->cacheItem);
+
+        $this->cacheItem->expects(self::once())
+            ->method('isHit')
+            ->willReturn(true);
+
+        $this->cacheItem->expects(self::once())
             ->method('get')
-            ->with(
-                $message->cacheKey,
-                self::callback(static fn($callback): bool => is_callable($callback)),
-            )
             ->willReturn($cachePayload);
 
         $this->movieRepository->expects(self::once())
@@ -125,11 +134,16 @@ final class SyncTmdbMoviesFromCacheHandlerTest extends TestCase
         $message = new SyncMoviesFromCacheMessage('tmdb_movies_cache_key');
 
         $this->cache->expects(self::once())
+            ->method('getItem')
+            ->with($message->cacheKey)
+            ->willReturn($this->cacheItem);
+
+        $this->cacheItem->expects(self::once())
+            ->method('isHit')
+            ->willReturn(true);
+
+        $this->cacheItem->expects(self::once())
             ->method('get')
-            ->with(
-                $message->cacheKey,
-                self::callback(static fn($callback): bool => is_callable($callback)),
-            )
             ->willReturn(['results' => []]);
 
         $this->movieRepository->expects(self::never())
